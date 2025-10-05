@@ -44,6 +44,11 @@ class TwelveDataProvider:
                 'volume': 'Volume'
             }, inplace=True)
             
+            # Forex non ha volume, aggiungiamo una colonna vuota se manca
+            if 'Volume' not in df.columns:
+                df['Volume'] = 0
+                logger.debug(f"Added empty Volume column for Forex pair {symbol}")
+            
             logger.info(f"Retrieved {len(df)} bars for {symbol} from TwelveData")
             return df[['Open', 'High', 'Low', 'Close', 'Volume']]
             

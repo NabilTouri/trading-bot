@@ -54,6 +54,16 @@ def run_backtest(args):
             if data is None or data.empty:
                 logger.warning(f"No data for {symbol}, skipping")
                 continue
+
+            min_bars = max(settings.ema_slow, settings.atr_period) + 50
+            if len(data) < min_bars:
+                logger.error(
+                    f"Insufficient data for {symbol}: got {len(data)} bars, "
+                    f"need at least {min_bars}. Try a wider date range."
+                )
+                continue
+
+            logger.info(f"Data loaded: {len(data)} bars from {data.index[0]} to {data.index[-1]}")
             
             # Esegui backtest
             backtester = Backtester(
@@ -79,10 +89,19 @@ def run_backtest(args):
             logger.info(f"Initial Capital: ${results['initial_value']:.2f}")
             logger.info(f"Final Capital: ${results['final_value']:.2f}")
             logger.info(f"Total Return: {results['total_return']:.2f}%")
-            logger.info(f"Sharpe Ratio: {results['sharpe_ratio']:.2f}")
-            logger.info(f"Max Drawdown: {results['max_drawdown']:.2f}%")
+            
+            # Handle None values for metrics
+            sharpe = results.get('sharpe_ratio')
+            logger.info(f"Sharpe Ratio: {sharpe:.2f}" if sharpe is not None else "Sharpe Ratio: N/A")
+            
+            max_dd = results.get('max_drawdown')
+            logger.info(f"Max Drawdown: {max_dd:.2f}%" if max_dd is not None else "Max Drawdown: N/A")
+            
             logger.info(f"Total Trades: {results['total_trades']}")
-            logger.info(f"Win Rate: {results['win_rate']:.2f}%")
+            
+            win_rate = results.get('win_rate')
+            logger.info(f"Win Rate: {win_rate:.2f}%" if win_rate is not None else "Win Rate: N/A")
+            
             logger.info(f"{'='*50}\n")
     
     finally:
