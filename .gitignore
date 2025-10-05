@@ -52,5 +52,4 @@ htmlcov/
 Thumbs.db
 
 # Project specific
-data/
 backtest_results/
