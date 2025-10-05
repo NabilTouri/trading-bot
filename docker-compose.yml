@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  forex-bot:
+    build: .
+    container_name: forex-trading-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+      - ./config:/app/config
+    environment:
+      - MODE=${MODE:-paper}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    command: python src/main.py --mode ${MODE:-paper}
+    
+  # Servizio per backtest
+  forex-bot-backtest:
+    build: .
+    container_name: forex-bot-backtest
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+      - ./config:/app/config
+    command: python src/main.py --mode backtest --start 2024-01-01 --end 2024-12-31
+    profiles:
+      - backtest
