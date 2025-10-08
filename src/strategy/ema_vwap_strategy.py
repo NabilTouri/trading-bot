@@ -39,15 +39,21 @@ class EMAVWAPStrategy:
         )
         
         # Identifica crossover per evitare segnali continui
-        df['Long_Entry'] = (
-            df['Long_Signal'] & 
-            ~df['Long_Signal'].shift(1).fillna(False)
-        )
+        # df['Long_Entry'] = (
+        #     df['Long_Signal'] & 
+        #     ~df['Long_Signal'].shift(1).fillna(False)
+        # )
         
-        df['Short_Entry'] = (
-            df['Short_Signal'] & 
-            ~df['Short_Signal'].shift(1).fillna(False)
-        )
+        # df['Short_Entry'] = (
+        #     df['Short_Signal'] & 
+        #     ~df['Short_Signal'].shift(1).fillna(False)
+        # )
+
+        prev_long = df['Long_Signal'].shift(1, fill_value=False)
+        prev_short = df['Short_Signal'].shift(1, fill_value=False)
+
+        df['Long_Entry'] = df['Long_Signal'] & ~prev_long
+        df['Short_Entry'] = df['Short_Signal'] & ~prev_short
         
         return df
     
