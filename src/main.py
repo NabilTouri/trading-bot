@@ -304,14 +304,14 @@ def main():
     parser = argparse.ArgumentParser(description='Forex Intraday Trading Bot')
     parser.add_argument(
         '--mode', 
-        type=str, 
-        default=settings.mode,
+        type=str,
         choices=['backtest', 'paper', 'live'],
-        help='Trading mode'
+        help='Trading mode',
+        required=True
     )
     parser.add_argument('--start', type=str, help='Backtest start date (YYYY-MM-DD)')
     parser.add_argument('--end', type=str, help='Backtest end date (YYYY-MM-DD)')
-    
+
     args = parser.parse_args()
     
     logger.info(f"Starting Forex Trading Bot in {args.mode} mode")
